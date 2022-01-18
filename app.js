@@ -47,20 +47,48 @@ const Article = mongoose.model("Article", articleSchema);
 
 
 
-
-app.get("/", function(req, res)
+// We will be reading our database from here using get.
+app.get("/articles", function(req, res)
 {
-    res.sendFile(__dirname+"indes.html");
+    Article.find(function(err, foundArticles){
+        if(!err)
+        {
+            res.send(foundArticles);
+        }
+        else
+        {
+            res.send(err);
+        }
+    });
 });
 
 
-app.post("/", function(req, res)
+// Creating data
+app.post("/articles", function(req, res)
 {
-    console.log(req.body.name);
+    // saving the new article data into the database using the article schema
+    const newArticle = new Article({
+        title : req.body.title,
+        content : req.body.content
+    });
+
+    // We can even semd a call back function in save functions which will help
+    // us know about any error occured.
+    newArticle.save(function(err){
+        if(!err)
+        {
+            res.send("Successfully added a new article!");
+        } 
+        else
+        {
+            res.send(err);
+        }
+    });
+
 });
 
 
-app.listen(process.env.POST || 3000, function()
+app.listen(process.env.PORRT || 3000, function()
 {
     console.log("App is running at local host 3000");
 });
