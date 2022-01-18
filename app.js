@@ -7,7 +7,7 @@ const ejs = require('ejs');
 const app = express();
 
 // using body-parser to take input from the user
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Setting up the ejs on application
 app.set('view engine', 'ejs');
@@ -19,17 +19,14 @@ app.use(express.static("public"));
 
 
 
-
-
-
 /********************Setting up mongoose dataserver, schema, model and collection */
 
 // Connecting to mongo db server at local host 27017 with the database name wikiDB
-mongoose.connect('mongodb://localhost:27017/wikidb', {useNewUrlParser : true});
+mongoose.connect('mongodb://localhost:27017/wikidb', { useNewUrlParser: true });
 
 // Creating a new schema for the documents;
 const articleSchema = {
-    title : String,
+    title: String,
     content: String
 };
 
@@ -42,53 +39,50 @@ const Article = mongoose.model("Article", articleSchema);
 
 
 
+// managing different verbs targeting same route **********************************/
+app.route("/articles")
 
-
-
-
-
-// We will be reading our database from here using get.
-app.get("/articles", function(req, res)
-{
-    Article.find(function(err, foundArticles){
-        if(!err)
-        {
+.get(function (req, res) {
+    Article.find(function (err, foundArticles) {
+        if (!err) {
             res.send(foundArticles);
         }
-        else
-        {
+        else {
             res.send(err);
         }
     });
-});
+})
 
-
-// Creating data
-app.post("/articles", function(req, res)
-{
+.post(function (req, res) {
     // saving the new article data into the database using the article schema
     const newArticle = new Article({
-        title : req.body.title,
-        content : req.body.content
+        title: req.body.title,
+        content: req.body.content
     });
-
     // We can even semd a call back function in save functions which will help
     // us know about any error occured.
-    newArticle.save(function(err){
-        if(!err)
-        {
+    newArticle.save(function (err) {
+        if (!err) {
             res.send("Successfully added a new article!");
-        } 
-        else
-        {
+        }
+        else {
             res.send(err);
         }
     });
+})
 
+.delete(function (req, res) {
+    Article.deleteMany(function (err) {
+        if (!err) {
+            res.send("Successfully deleted all articles!");
+        }
+        else {
+            res.send(err);
+        }
+    });
 });
+/***********************************************************************************/
 
-
-app.listen(process.env.PORRT || 3000, function()
-{
+app.listen(process.env.PORRT || 3000, function () {
     console.log("App is running at local host 3000");
 });
