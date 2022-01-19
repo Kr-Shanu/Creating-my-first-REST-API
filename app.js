@@ -1,20 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const ejs = require('ejs');
 
 // setting up the app using express
 const app = express();
 
 // using body-parser to take input from the user
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Setting up the ejs on application
-app.set('view engine', 'ejs');
-
-// Setting up the public folder to set up the static files.
-app.use(express.static("public"));
-
 
 
 /********************Setting up mongoose dataserver, schema, model and collection */
