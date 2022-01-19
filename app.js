@@ -149,6 +149,6 @@ app.route("/articles/:articleTitle")
 
 
 
-app.listen(process.env.PORRT || 3000, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log("App is running at local host 3000");
 });
